@@ -93,27 +93,39 @@ void checkStartup()
 {
 	HKEY hKey;
 
-	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, TEXT("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run\\"), 0, KEY_ALL_ACCESS | KEY_WOW64_64KEY, &hKey) != ERROR_SUCCESS)
+	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, TEXT("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run\\"), 0, KEY_READ | KEY_WOW64_64KEY, &hKey) != ERROR_SUCCESS)
 	{
-		MessageBox::Show("Unable to open configuration key!", "UWF Manager", MessageBoxButtons::OK, MessageBoxIcon::Error);
+		MessageBox::Show("Unable to open startup key!", "UWF Manager", MessageBoxButtons::OK, MessageBoxIcon::Error);
 	}
 	else
 	{
 		DWORD value_length = sizeof(DWORD);
 		if (RegQueryValueEx(hKey, TEXT("UWF_Monitor"), NULL, NULL, NULL, &value_length) != ERROR_SUCCESS)
 		{
+			RegCloseKey(hKey);
 			if (MessageBox::Show("Would you like to add the UWF Monitor to system startup?", "UWF Monitor", MessageBoxButtons::YesNo, MessageBoxIcon::Information) == DialogResult::Yes)
 			{
-				std::wstring path = TEXT("C:\\Program Files\\UWF Manager\\uwfmon.exe");
-				int pathLength = path.length();
-				if (RegSetValueEx(hKey, TEXT("UWF_Monitor"), 0, REG_SZ, (LPBYTE)path.c_str(), (path.size() +1)* sizeof(wchar_t)) != ERROR_SUCCESS)
+				if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, TEXT("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run\\"), 0, KEY_ALL_ACCESS | KEY_WOW64_64KEY, &hKey) != ERROR_SUCCESS)
 				{
-					MessageBox::Show("Unable to add UWF Monitor to startup, make sure you are running as administrator.", "UWF Monitor", MessageBoxButtons::OK, MessageBoxIcon::Error);
+					MessageBox::Show("Unable to add to startup items, make sure you are running as administrator.", "UWF Manager", MessageBoxButtons::OK, MessageBoxIcon::Error);
+					RegCloseKey(hKey);
+					exit(0);
 				}
 				else
 				{
-					RegCloseKey(hKey);
-					MessageBox::Show("Successfully added to startup! Please make sure this executable is renamed and copied to \"C:\\Program Files\\UWF Manager\\uwfmon.exe\"", "UWF Monitor", MessageBoxButtons::OK, MessageBoxIcon::Information);
+					std::wstring path = TEXT("C:\\Program Files\\UWF Manager\\uwfmon.exe");
+					int pathLength = path.length();
+					if (RegSetValueEx(hKey, TEXT("UWF_Monitor"), 0, REG_SZ, (LPBYTE)path.c_str(), (path.size() + 1)* sizeof(wchar_t)) != ERROR_SUCCESS)
+					{
+						MessageBox::Show("Unable to add UWF Monitor to startup, make sure you are running as administrator.", "UWF Monitor", MessageBoxButtons::OK, MessageBoxIcon::Error);
+						RegCloseKey(hKey);
+						exit(0);
+					}
+					else
+					{
+						RegCloseKey(hKey);
+						MessageBox::Show("Successfully added to startup! Please make sure this executable is renamed and copied to \"C:\\Program Files\\UWF Manager\\uwfmon.exe\"", "UWF Monitor", MessageBoxButtons::OK, MessageBoxIcon::Information);
+					}
 				}
 			}
 		}
