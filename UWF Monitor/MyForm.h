@@ -100,11 +100,10 @@ namespace UWFMonitor {
 	private: System::Void uwfMon_DoubleClick(System::Object^  sender, System::EventArgs^  e) {
 
 
-				 // Uncomment loadMgr below if you would like to launch UWF Manager on doubleclick.
-				 // Make sure the UWF Monitor executable is copied to and renamed to match the execution
-				 // path within the loadMgr function.
+				 // Comment/Uncomment loadMgr below depending on if you would like to launch UWF Manager on doubleclick.
+				 // Make sure the UWF Monitor executable is copied to and renamed to match the execution path within the loadMgr function.
 				  
-				 //loadMgr();
+				 loadMgr();
 
 				 //Refreshes status indicator on doubleclick.
 				 System::Drawing::Icon^ newIco = System::Drawing::Icon::FromHandle((IntPtr)loadIcon());

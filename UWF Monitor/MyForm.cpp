@@ -45,11 +45,11 @@ HICON loadIcon()
 
 	getUWF(current, next);
 
-	if (current == 0 && current == next)
+	if (current == 1 && current == next)
 	{
 		return Red;
 	}
-	else if (current == 1 && current == next)
+	else if (current == 0 && current == next)
 	{
 		return Green;
 	}
