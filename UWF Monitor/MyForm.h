@@ -90,7 +90,7 @@ namespace UWFMonitor {
 			this->ShowIcon = false;
 			this->ShowInTaskbar = false;
 			this->SizeGripStyle = System::Windows::Forms::SizeGripStyle::Hide;
-			this->Text = L"MyForm";
+			this->Text = L"UWF Monitor";
 			this->WindowState = System::Windows::Forms::FormWindowState::Minimized;
 			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
 			this->ResumeLayout(false);
